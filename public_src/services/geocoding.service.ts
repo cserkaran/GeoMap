@@ -1,5 +1,6 @@
 import {Http, Headers, Response} from "@angular/http";
 import {Injectable} from "@angular/core";
+import {PolygonInfo} from "../core/polygonInfo.class";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/mergeMap";
 import Collections = require('typescript-collections');
@@ -17,10 +18,15 @@ export class GeocodingService {
             .get("http://geo-exercise.id.com.au/api/data")
             .map(res => res.json())
             .map(result => {
-                let  polygonColorDictionary = new Collections.Dictionary<string, string>();
+                let  polygonColorDictionary = new Collections.Dictionary<string, PolygonInfo>();
                 let  data = result.data;
                 data.forEach(element => {
-                    polygonColorDictionary.setValue(element.GeoID,element.color);
+                    let info = new PolygonInfo();
+                    info.color = element.color;
+                    info.number = element.InfoBox["Number"];
+                    info.percent = element.InfoBox["Percent (%)"];
+                    info.totalPopulation = element.InfoBox["Total pop"];
+                    polygonColorDictionary.setValue(element.GeoID, info);
                 });  
 
                 return polygonColorDictionary; 

@@ -39,11 +39,26 @@ export class AppComponent {
             { 
               L.geoJSON(polygon, { 
                   style: function(feature) {
-                            return {color:  polygonColorDictionary.getValue(feature.properties["GeoID"]) };
-                        }
-                }).addTo(map);
+                            return {color:  polygonColorDictionary.getValue(feature.properties["GeoID"]).color };
+                        },
+                  onEachFeature: function(feature, layer) {
+                        var properties = polygonColorDictionary.getValue(feature.properties["GeoID"]);
+                        let toolTip : string = `Number : ` +  properties.number  + ", " + 
+                                              `Percent (%) : ` +  properties.percent  + ", " + 
+                                              `Total population : ` +  properties.totalPopulation ;
+                               
+
+                      
+                         layer.bindTooltip(toolTip);
+
+                      }
+                },
+                ).addTo(map);
             })
            }, error => console.error(error));
         }, error => console.error(error)); 
     }
+
+    
+  
 }
