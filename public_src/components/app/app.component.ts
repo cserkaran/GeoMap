@@ -29,6 +29,21 @@ export class AppComponent {
         L.control.scale().addTo(map);
 
         this.mapService.map = map;
-        
+        this.geocoder.geoJsonPolygonFeatures()
+        .subscribe(polygons => {
+           
+           this.geocoder.geoDataPolygonColors().
+           subscribe(polygonColorDictionary => {
+
+           polygons.forEach(polygon =>
+            { 
+              L.geoJSON(polygon, { 
+                  style: function(feature) {
+                            return {color:  polygonColorDictionary.getValue(feature.properties["GeoID"]) };
+                        }
+                }).addTo(map);
+            })
+           }, error => console.error(error));
+        }, error => console.error(error)); 
     }
 }
